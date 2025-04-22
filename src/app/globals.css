@@ -3,6 +3,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───────────────────────────────────────────────────── */
+/* 1) Base 레이어에 MoveSans-Bold @font-face 등록        */
+@layer base {
+  @font-face {
+    font-family: "MoveSans-Bold";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2405-2@1.0/MoveSans-Bold.woff2")
+      format("woff2");
+    font-weight: 700;
+    font-style: normal;
+  }
+  /* 2) 하단 한글용 폰트 등록 */
+  @font-face {
+    font-family: "KNPSKkomi-Regular00";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/KNPSKkomi-Regular00.woff")
+      format("woff");
+    font-weight: normal;
+    font-style: normal;
+  }
+}
+/* ───────────────────────────────────────────────────── */
+/* src/app/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 별 깜빡임 키프레임 */
+@layer base {
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+}
+
+/* .star 클래스 정의 */
+@layer components {
+  .star {
+    @apply w-[2px] h-[2px] bg-white rounded-full fixed;
+    animation: twinkle 2s infinite ease-in-out alternate;
+  }
+}
+/* ───────────────────────────────────────────────────── */
+
+/* 기존 커스텀 전역 스타일… */
 :root {
   --background: #ffffff;
   --foreground: #171717;
