@@ -1,23 +1,34 @@
 "use client";
 
-import StarField from "../components/StarField";
 import { useEffect, useState } from "react";
+import StarField from "../components/StarField"; // ✅ 꼭 추가해줘야 함
 
 export default function Home() {
   const [theme, setTheme] = useState("light");
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    // ✅ 라이트모드로 강제 설정
-    localStorage.setItem("theme", "light");
-    document.documentElement.classList.remove("dark");
-    setTheme("light");
+    const html = document.documentElement;
+    const observer = new MutationObserver(() => {
+      const isDark = html.classList.contains("dark");
+      setTheme(isDark ? "dark" : "light");
+    });
+
+    observer.observe(html, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    setHasMounted(true);
+    return () => observer.disconnect();
   }, []);
+
+  if (!hasMounted) return null;
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white px-4 relative overflow-hidden">
       <StarField count={80} />
 
-      {/* 🌟 애니메이션 적용된 텍스트 영역 */}
       <div
         className={`
           transition-all duration-1000 ease-out transform
