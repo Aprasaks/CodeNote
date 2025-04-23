@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
 
   // ✅ 다크모드 상태 감지
   useEffect(() => {
-    const stored = localStorage.getItem("theme");
+    const stored = localStorage.getItem("theme", "light");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     if (stored === "dark" || (!stored && prefersDark)) {

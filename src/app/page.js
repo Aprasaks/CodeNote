@@ -7,18 +7,10 @@ export default function Home() {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    const html = document.documentElement;
-    const observer = new MutationObserver(() => {
-      const isDark = html.classList.contains("dark");
-      setTheme(isDark ? "dark" : "light");
-    });
-
-    observer.observe(html, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
+    // ✅ 라이트모드로 강제 설정
+    localStorage.setItem("theme", "light");
+    document.documentElement.classList.remove("dark");
+    setTheme("light");
   }, []);
 
   return (
