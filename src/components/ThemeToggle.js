@@ -1,12 +1,9 @@
-// src/components/ThemeToggle.js
 "use client";
-
 import { useState, useEffect } from "react";
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState("light");
 
-  // 첫 마운트 시 로컬스토리지나 시스템 프리퍼런스에서 테마 읽기
   useEffect(() => {
     const stored = localStorage.getItem("theme");
     if (
@@ -32,9 +29,13 @@ export default function ThemeToggle() {
     <button
       aria-label="Toggle Dark Mode"
       onClick={toggle}
-      className="p-2 rounded-md bg-gray-200 dark:bg-gray-800"
+      className={`
+        transition-all duration-700 ease-out
+        text-4xl
+        ${theme === "dark" ? "-translate-y-6 scale-125" : "translate-y-0 scale-100"}
+      `}
     >
-      {theme === "dark" ? "🌞" : "🌙"}
+      🌕
     </button>
   );
 }
