@@ -1,5 +1,6 @@
 // src/app/layout.js
 import "./globals.css";
+import StarField from "../components/StarField";
 import ConstellationsBackground from "../components/ConstellationsBackground";
 import ThemeToggle from "../components/ThemeToggle";
 
@@ -15,9 +16,16 @@ export default function RootLayout({ children }) {
         {/* 다크모드별 랜덤 별빛 */}
         {/* 다크모드별 클릭 가능한 별자리 오버레이 */}
         <ConstellationsBackground />
+        <StarField count={300} />
+        {/* 1) 별 전체 배경 + 은하수 밴드 */}
 
+        <StarField
+          uniformCount={150} // 전체용 별 수
+          bandCount={300} // 은하수 밴드별 수
+          bandStart={40} // 은하수 밴드 위치
+          bandHeight={20} // 은하수 밴드 높이
+        />
         {children}
-
         {/* ────────────────────────────────────────────── */}
         {/* 오른쪽 하단에 고정 위치로 다크모드 토글 */}
         <div

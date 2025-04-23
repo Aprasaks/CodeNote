@@ -125,67 +125,60 @@ export default function ConstellationsBackground() {
           }}
         >
           <defs>
-            <filter id={`glowFilter${i}`}>
-              <feGaussianBlur stdDeviation="1" result="blur" />
+            {/* 은은한 글로우 필터 */}
+            <filter id={`glow${i}`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+            {/* 별빛 원 그라디언트 */}
+            <radialGradient id={`rg${i}`} cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="white" stopOpacity="1" />
+              <stop offset="60%" stopColor="white" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="white" stopOpacity="0" />
+            </radialGradient>
             <style>{`
-              @keyframes twinkle {
+              @keyframes twinkle-min {
                 0%,100% { opacity: 0.6; }
-                50% { opacity: 1; }
-              }
-              @keyframes lineFade {
-                0%,100% { stroke-opacity: 0.2; }
-                50% { stroke-opacity: 0.5; }
+                50% { opacity: 0.8; }
               }
             `}</style>
           </defs>
 
-          <a
-            href={c.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pointer-events-auto cursor-pointer"
-          >
-            <polyline
-              points={c.points.map((p) => `${p.x},${p.y}`).join(" ")}
-              fill="none"
-              stroke="#fff"
-              strokeWidth="0.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              filter={`url(#glowFilter${i})`}
-              style={{
-                animation: "lineFade 4s ease-in-out infinite",
-                strokeDasharray: "1,3",
-              }}
-              className="pointer-events-auto"
-            />
+          <a href={c.link} className="pointer-events-auto cursor-pointer">
+            {/* 1) 별자리 선: 부드럽게 그라디언트로 흐려지게 */}
+            {c.points.slice(1).map((p, idx) => {
+              const prev = c.points[idx];
+              return (
+                <line
+                  key={idx}
+                  x1={prev.x}
+                  y1={prev.y}
+                  x2={p.x}
+                  y2={p.y}
+                  stroke="rgba(255,255,255,0.15)"
+                  strokeWidth="0.5"
+                  strokeLinecap="round"
+                  filter={`url(#glow${i})`}
+                />
+              );
+            })}
 
+            {/* 2) 별점: circle + radialGradient + glow + 미세 twinkle */}
             {c.points.map((p, j) => (
-              <polygon
+              <circle
                 key={j}
-                points={`
-                  ${p.x},${p.y - 1.5}
-                  ${p.x + 0.5},${p.y}
-                  ${p.x + 1.5},${p.y}
-                  ${p.x + 0.75},${p.y + 0.5}
-                  ${p.x + 1},${p.y + 1.5}
-                  ${p.x},${p.y + 1}
-                  ${p.x - 1},${p.y + 1.5}
-                  ${p.x - 0.75},${p.y + 0.5}
-                  ${p.x - 1.5},${p.y}
-                  ${p.x - 0.5},${p.y}
-                `}
-                fill="#fff"
-                filter={`url(#glowFilter${i})`}
-                style={{
-                  animation: "twinkle 3s ease-in-out infinite",
-                }}
+                cx={p.x}
+                cy={p.y}
+                r="1.4"
+                fill={`url(#rg${i})`}
+                filter={`url(#glow${i})`}
                 className="pointer-events-auto"
+                style={{
+                  animation: "twinkle-min 3s ease-in-out infinite",
+                }}
               />
             ))}
           </a>

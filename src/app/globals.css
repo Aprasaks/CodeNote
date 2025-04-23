@@ -30,23 +30,37 @@
 @tailwind utilities;
 
 /* 별 깜빡임 키프레임 */
-@layer base {
-  @keyframes twinkle {
-    0%,
-    100% {
-      opacity: 0.8;
-    }
-    50% {
-      opacity: 0.2;
-    }
+@layer components {
+  .star {
+    position: absolute;
+    background: radial-gradient(circle at center, #fff, transparent);
+    border-radius: 50%;
+    filter: blur(0.5px);
+    animation: twinkle 4s ease-in-out infinite alternate;
   }
 }
 
-/* .star 클래스 정의 */
-@layer components {
-  .star {
-    @apply w-[2px] h-[2px] bg-white rounded-full fixed;
-    animation: twinkle 1s infinite ease-in-out alternate;
+@layer base {
+  @keyframes twinkle {
+    from {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+    to {
+      transform: scale(1.4);
+      opacity: 1;
+    }
+  }
+  @keyframes lineFade {
+    0% {
+      stroke-opacity: 0.2;
+    }
+    50% {
+      stroke-opacity: 0.5;
+    }
+    100% {
+      stroke-opacity: 0.2;
+    }
   }
 }
 /* ───────────────────────────────────────────────────── */
