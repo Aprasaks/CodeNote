@@ -1,5 +1,6 @@
 // src/app/layout.js
 import "./globals.css";
+import ConstellationsBackground from "../components/ConstellationsBackground";
 import ThemeToggle from "../components/ThemeToggle";
 
 export default function RootLayout({ children }) {
@@ -11,6 +12,9 @@ export default function RootLayout({ children }) {
         {/* <header className="p-4 flex justify-end">
           <ThemeToggle />
         </header> */}
+        {/* 다크모드별 랜덤 별빛 */}
+        {/* 다크모드별 클릭 가능한 별자리 오버레이 */}
+        <ConstellationsBackground />
 
         {children}
 

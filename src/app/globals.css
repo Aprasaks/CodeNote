@@ -46,7 +46,7 @@
 @layer components {
   .star {
     @apply w-[2px] h-[2px] bg-white rounded-full fixed;
-    animation: twinkle 2s infinite ease-in-out alternate;
+    animation: twinkle 1s infinite ease-in-out alternate;
   }
 }
 /* ───────────────────────────────────────────────────── */
