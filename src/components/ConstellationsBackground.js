@@ -5,17 +5,19 @@ import React from "react";
 
 const CONSTELLATIONS = [
   {
-    name: "오리온자리",
-    link: "https://ko.wikipedia.org/wiki/오리온자리",
-    top: 10,
-    left: 5,
-    width: 20,
+    name: "염소자리",
+    description: "책임감 있고 실용적이며, 목표지향적인 성격. 꾸준한 노력으로 성취를 이룹니다.",
+    link: "/posts",
+    top: 12,
+    left: 8,
+    width: 22,
     points: [
-      { x: 10, y: 10 },
-      { x: 30, y: 25 },
-      { x: 50, y: 20 },
-      { x: 65, y: 35 },
+      { x: 20, y: 60 }, // 아래
+      { x: 35, y: 45 },
       { x: 50, y: 50 },
+      { x: 60, y: 35 },
+      { x: 70, y: 45 },
+      { x: 80, y: 30 }, // 끝 뿔
     ],
   },
   {
