@@ -6,6 +6,7 @@ import ConstellationsBackground from "../components/ConstellationsBackground";
 import ThemeToggle from "../components/ThemeToggle";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import Script from "next/script";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
@@ -40,7 +41,25 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="ko">
-      <head>{/* (생략) */}</head>
+      <head>
+        {/* ✅ GA: Next.js 권장 방식 적용 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-GTKFS9NEH6"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="ga-gtag"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-GTKFS9NEH6');
+      `,
+          }}
+        />
+      </head>
       <body className="bg-white dark:bg-black text-black dark:text-white min-h-screen relative">
         {/* 🌌 별자리 배경 (홈에서만 / 다크모드에서만 fade-in) */}
         {pathname === "/" && (
@@ -70,8 +89,8 @@ export default function RootLayout({ children }) {
         )}
 
         {/* ✨ 항상 보이는 별 배경 */}
-        <StarField count={300} />
-        <StarField uniformCount={150} bandCount={300} bandStart={40} bandHeight={20} />
+        <StarField count={80} />
+        <StarField uniformCount={50} bandCount={80} bandStart={40} bandHeight={20} />
 
         {children}
 
