@@ -4,6 +4,8 @@ import matter from "gray-matter";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { notFound } from "next/navigation";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 export default async function PostPage({ params }) {
   const slug = params.slug;
@@ -22,7 +24,25 @@ export default async function PostPage({ params }) {
       <p className="text-gray-400 text-sm mb-6">{new Date(data.date).toLocaleDateString()}</p>
 
       <article className="prose prose-invert max-w-none">
-        <Markdown rehypePlugins={[rehypeRaw]}>{content}</Markdown>
+        <Markdown
+          rehypePlugins={[rehypeRaw]}
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <SyntaxHighlighter style={oneDark} language={match[1]} PreTag="div" {...props}>
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {content}
+        </Markdown>
       </article>
     </main>
   );
