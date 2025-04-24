@@ -1,25 +1,24 @@
-// src/components/StarField.js
 "use client";
 
 import { useEffect, useState } from "react";
 
 export default function StarField({
-  uniformCount = 100, // 전체용 별 개수
-  bandCount = 200, // 은하수 밴드용 별 개수
-  bandStart = 40, // 밴드 시작(%) - 화면 높이
-  bandHeight = 20, // 밴드 높이(%)
+  uniformCount = 100,
+  bandCount = 200,
+  bandStart = 40,
+  bandHeight = 20,
 }) {
-  const [stars, setStars] = useState([]);
+  const [stars, setStars] = useState(null); // 🚫 초기값 null로 해서 서버 렌더링에 별 안 만들기
 
   useEffect(() => {
     const arr = [];
 
-    // 1) 전체 배경용 별 (고르게 분포)
+    // 전체용 별 생성
     for (let i = 0; i < uniformCount; i++) {
       const size = 0.5 + Math.random() * 1.5;
       const brightness = 0.5 + Math.random() * 0.5;
       arr.push({
-        top: Math.random() * 100, // 0~100%
+        top: Math.random() * 100,
         left: Math.random() * 100,
         size,
         brightness,
@@ -28,12 +27,12 @@ export default function StarField({
       });
     }
 
-    // 2) 은하수 밴드용 별 (밴드 내 집중 분포)
+    // 은하수용 별 생성
     for (let i = 0; i < bandCount; i++) {
       const size = 0.5 + Math.random() * 1.5;
       const brightness = 0.6 + Math.random() * 0.4;
       arr.push({
-        top: bandStart + Math.random() * bandHeight, // bandStart~bandStart+bandHeight
+        top: bandStart + Math.random() * bandHeight,
         left: Math.random() * 100,
         size,
         brightness,
@@ -44,6 +43,9 @@ export default function StarField({
 
     setStars(arr);
   }, [uniformCount, bandCount, bandStart, bandHeight]);
+
+  // ⭐ 서버에서는 렌더링하지 않음 (hydration mismatch 방지)
+  if (!stars) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 dark:block hidden">

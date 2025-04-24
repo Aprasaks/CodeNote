@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white px-4 relative overflow-hidden">
-      <StarField count={80} />
+      <StarField uniformCount={80} bandCount={120} />
 
       <div
         className={`
