@@ -13,13 +13,15 @@ export default function RootLayout({ children }) {
 
   // ✅ 다크모드 상태 감지
   useEffect(() => {
-    const stored = localStorage.getItem("theme", "light");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const html = document.documentElement;
+    const stored = localStorage.getItem("theme");
 
-    if (stored === "dark" || (!stored && prefersDark)) {
-      setTheme("dark");
+    // ✅ 사용자가 직접 dark 저장한 게 아닌 이상 무조건 라이트
+    if (stored === "dark") {
+      html.classList.add("dark");
     } else {
-      setTheme("light");
+      html.classList.remove("dark"); // 🤍 무조건 라이트
+      localStorage.setItem("theme", "light"); // 🎯 기본 테마 강제 저장
     }
 
     // ✅ 다크모드 클래스 변경 감지
@@ -28,7 +30,7 @@ export default function RootLayout({ children }) {
       setTheme(isDark ? "dark" : "light");
     });
 
-    observer.observe(document.documentElement, {
+    observer.observe(html, {
       attributes: true,
       attributeFilter: ["class"],
     });
