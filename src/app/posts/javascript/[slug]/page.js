@@ -4,8 +4,7 @@ import matter from "gray-matter";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { notFound } from "next/navigation";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import CollapsibleCodeBlock from "../../../../components/CollapsibleCodeBlock";
 
 export default async function PostPage({ params }) {
   const slug = params.slug;
@@ -27,12 +26,12 @@ export default async function PostPage({ params }) {
         <Markdown
           rehypePlugins={[rehypeRaw]}
           components={{
-            code({ node, inline, className, children, ...props }) {
+            code({ inline, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || "");
+              const code = String(children).replace(/\n$/, "");
+
               return !inline && match ? (
-                <SyntaxHighlighter style={oneDark} language={match[1]} PreTag="div" {...props}>
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
+                <CollapsibleCodeBlock language={match[1]} code={code} />
               ) : (
                 <code className={className} {...props}>
                   {children}

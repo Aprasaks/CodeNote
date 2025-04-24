@@ -153,5 +153,3 @@ fruits.forEach(function (item, index, arr) {
 ```
 
 forEach : 배열의 개별 요소에 대한 함수를 차례대로 호출한다.
-
-아직 여기는 정확하게 이해를 못했으니 사진으로 설명을 대체하려고 한다.
