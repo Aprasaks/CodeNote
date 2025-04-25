@@ -23,16 +23,35 @@ const CONSTELLATIONS = [
   {
     name: "큰곰자리",
     link: "https://ko.wikipedia.org/wiki/큰곰자리",
-    top: 5,
+    top: 8,
     left: 70,
-    width: 15,
+    width: 22,
     points: [
-      { x: 10, y: 10 },
-      { x: 20, y: 30 },
-      { x: 30, y: 25 },
-      { x: 40, y: 45 },
-      { x: 50, y: 40 },
-      { x: 60, y: 60 },
+      { x: 0, y: 60 },
+      { x: 15, y: 45 },
+      { x: 20, y: 58 },
+      { x: 50, y: 59 },
+      { x: 65, y: 60 },
+      { x: 75, y: 55 },
+      { x: 45, y: 49 },
+      { x: 40, y: 44 },
+      { x: 43, y: 35 },
+      { x: 55, y: 25 },
+      { x: 60, y: 28 },
+    ],
+    connections: [
+      [0, 1],
+      [1, 2],
+      [1, 7],
+      [2, 3],
+      [3, 4],
+      [3, 5],
+      [3, 6],
+      [6, 7],
+      [7, 8],
+      [8, 9],
+
+      [9, 10],
     ],
   },
 
@@ -150,18 +169,26 @@ export default function ConstellationsBackground() {
           </defs>
 
           <a href={c.link} className="pointer-events-auto cursor-pointer">
-            {/* 1) 별자리 선: 부드럽게 그라디언트로 흐려지게 */}
-            {c.points.slice(1).map((p, idx) => {
-              const prev = c.points[idx];
+            {/* ✅ connections로 직접 지정한 선만 그림 */}
+            {c.connections?.map(([from, to], idx) => {
+              const p1 = c.points[from];
+              const p2 = c.points[to];
+
+              // 🛑 좌표가 없으면 선 그리지 않기
+              if (!p1 || !p2) {
+                console.warn(`❌ 선 연결 실패: ${from} → ${to}`, p1, p2);
+                return null;
+              }
+
               return (
                 <line
                   key={idx}
-                  x1={prev.x}
-                  y1={prev.y}
-                  x2={p.x}
-                  y2={p.y}
-                  stroke="rgba(255,255,255,0.15)"
-                  strokeWidth="0.5"
+                  x1={p1.x}
+                  y1={p1.y}
+                  x2={p2.x}
+                  y2={p2.y}
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="0.6"
                   strokeLinecap="round"
                   filter={`url(#glow${i})`}
                 />

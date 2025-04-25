@@ -73,12 +73,13 @@ export default function RootLayout({ children }) {
         {/* 🌙 라이트모드 안내 문구 + 큰 달 토글 */}
         {pathname === "/" && (
           <>
-            <div className="dark:hidden fixed bottom-28 left-1/2 -translate-x-1/2 z-40 text-center">
-              <p className="text-4xl  text-black font-['MoveSans-Bold']">
+            <div className="dark:hidden fixed bottom-52 left-1/2 -translate-x-1/2 z-40 text-center">
+              <p className="text-5xl  text-black font-['MoveSans-Bold']">
                 The stars in the night sky know everything.
               </p>
               <p className="mt-3 text-xl text-black font-['KNPSKkomi-Regular00']">
                 별을 보기위해 달을 띄워주세요
+                <br /> 별자리에는 각각의 내용이 담겨 있어요
               </p>
             </div>
 
