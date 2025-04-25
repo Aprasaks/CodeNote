@@ -4,11 +4,13 @@ import matter from "gray-matter";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
+import remarkWikiLink from "remark-wiki-link";
 import "highlight.js/styles/github-dark.css";
 import { notFound } from "next/navigation";
-import GiscusComment from "../../../../components/GiscusComment"; // ✅ 댓글 컴포넌트 재사용
+import GiscusComment from "../../../../components/GiscusComment";
+import Link from "next/link"; // ✅ 추가
 
-// 📌 react 전용 경로로 변경
+// ❗ 경로 수정: src/posts/react
 const POSTS_DIR = path.join(process.cwd(), "src/app/posts/react");
 
 export async function generateStaticParams() {
@@ -46,7 +48,25 @@ export default async function PostPage({ params }) {
       <h1 className="text-4xl font-bold mb-2">{data.title}</h1>
       <p className="text-gray-400 text-sm mb-6">{new Date(data.date).toLocaleDateString()}</p>
       <article className="prose prose-invert max-w-none mb-12">
-        <Markdown rehypePlugins={[rehypeRaw, rehypeHighlight]}>{content}</Markdown>
+        <Markdown
+          rehypePlugins={[rehypeRaw, rehypeHighlight]}
+          remarkPlugins={[
+            [
+              remarkWikiLink,
+              {
+                hrefTemplate: (permalink) =>
+                  `/posts/react/${permalink.toLowerCase().replace(/\s+/g, "-")}`,
+              },
+            ],
+          ]}
+          components={{
+            a({ href, children }) {
+              return <Link href={href}>{children}</Link>;
+            },
+          }}
+        >
+          {content}
+        </Markdown>
       </article>
       <GiscusComment />
     </main>
