@@ -1,7 +1,7 @@
-// src/components/ConstellationsBackground.js
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const CONSTELLATIONS = [
   {
@@ -12,17 +12,18 @@ const CONSTELLATIONS = [
     left: 8,
     width: 22,
     points: [
-      { x: 20, y: 60 }, // 아래
+      { x: 20, y: 60 },
       { x: 35, y: 45 },
       { x: 50, y: 50 },
       { x: 60, y: 35 },
       { x: 70, y: 45 },
-      { x: 80, y: 30 }, // 끝 뿔
+      { x: 80, y: 30 },
     ],
   },
   {
-    name: "큰곰자리",
-    link: "https://ko.wikipedia.org/wiki/큰곰자리",
+    name: "사자자리",
+    description: "프로젝트",
+    link: "/projects",
     top: 8,
     left: 70,
     width: 22,
@@ -50,11 +51,9 @@ const CONSTELLATIONS = [
       [6, 7],
       [7, 8],
       [8, 9],
-
       [9, 10],
     ],
   },
-
   {
     name: "카시오페이아자리",
     link: "https://ko.wikipedia.org/wiki/카시오페이아자리",
@@ -100,7 +99,7 @@ const CONSTELLATIONS = [
     ],
   },
   {
-    name: "사자자리",
+    name: "사자리",
     link: "https://ko.wikipedia.org/wiki/사자자리",
     top: 60,
     left: 60,
@@ -131,22 +130,35 @@ const CONSTELLATIONS = [
 ];
 
 export default function ConstellationsBackground() {
+  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, text: "" });
+  const router = useRouter();
+
   return (
     <div className="pointer-events-none fixed inset-0 z-20 dark:block hidden">
       {CONSTELLATIONS.map((c, i) => (
         <svg
           key={i}
           viewBox="0 0 100 100"
-          className="absolute pointer-events-none"
+          className="absolute pointer-events-auto cursor-pointer"
           style={{
             top: `${c.top}%`,
             left: `${c.left}%`,
             width: `${c.width}vw`,
             height: "auto",
           }}
+          onClick={() => c.link && router.push(c.link)}
+          onMouseEnter={(e) =>
+            setTooltip({
+              visible: true,
+              x: e.clientX,
+              y: e.clientY,
+              text: `${c.name} : ${c.description || ""}`,
+            })
+          }
+          onMouseMove={(e) => setTooltip((prev) => ({ ...prev, x: e.clientX, y: e.clientY }))}
+          onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, text: "" })}
         >
           <defs>
-            {/* 은은한 글로우 필터 */}
             <filter id={`glow${i}`} x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
               <feMerge>
@@ -154,65 +166,65 @@ export default function ConstellationsBackground() {
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
-            {/* 별빛 원 그라디언트 */}
+
             <radialGradient id={`rg${i}`} cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="white" stopOpacity="1" />
               <stop offset="60%" stopColor="white" stopOpacity="0.3" />
               <stop offset="100%" stopColor="white" stopOpacity="0" />
             </radialGradient>
+
             <style>{`
               @keyframes twinkle-min {
-                0%,100% { opacity: 0.6; }
-                50% { opacity: 0.8; }
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 0.9; }
               }
             `}</style>
           </defs>
 
-          <a href={c.link} className="pointer-events-auto cursor-pointer">
-            {/* ✅ connections로 직접 지정한 선만 그림 */}
-            {c.connections?.map(([from, to], idx) => {
-              const p1 = c.points[from];
-              const p2 = c.points[to];
-
-              // 🛑 좌표가 없으면 선 그리지 않기
-              if (!p1 || !p2) {
-                console.warn(`❌ 선 연결 실패: ${from} → ${to}`, p1, p2);
-                return null;
-              }
-
-              return (
-                <line
-                  key={idx}
-                  x1={p1.x}
-                  y1={p1.y}
-                  x2={p2.x}
-                  y2={p2.y}
-                  stroke="rgba(255,255,255,0.2)"
-                  strokeWidth="0.6"
-                  strokeLinecap="round"
-                  filter={`url(#glow${i})`}
-                />
-              );
-            })}
-
-            {/* 2) 별점: circle + radialGradient + glow + 미세 twinkle */}
-            {c.points.map((p, j) => (
-              <circle
-                key={j}
-                cx={p.x}
-                cy={p.y}
-                r="1.4"
-                fill={`url(#rg${i})`}
+          {c.connections?.map(([from, to], idx) => {
+            const p1 = c.points[from];
+            const p2 = c.points[to];
+            if (!p1 || !p2) return null;
+            return (
+              <line
+                key={idx}
+                x1={p1.x}
+                y1={p1.y}
+                x2={p2.x}
+                y2={p2.y}
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="0.6"
+                strokeLinecap="round"
                 filter={`url(#glow${i})`}
-                className="pointer-events-auto"
-                style={{
-                  animation: "twinkle-min 3s ease-in-out infinite",
-                }}
               />
-            ))}
-          </a>
+            );
+          })}
+
+          {c.points.map((p, j) => (
+            <circle
+              key={j}
+              cx={p.x}
+              cy={p.y}
+              r="1.4"
+              fill={`url(#rg${i})`}
+              filter={`url(#glow${i})`}
+              className="pointer-events-auto"
+              style={{
+                animation: "twinkle-min 3s ease-in-out infinite",
+              }}
+            />
+          ))}
         </svg>
       ))}
+
+      {tooltip.visible && (
+        <div
+          className="fixed z-50 px-2 py-1 bg-white text-black text-sm rounded shadow pointer-events-none"
+          style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
+        >
+          {tooltip.text}
+        </div>
+      )}
     </div>
   );
 }
