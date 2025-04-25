@@ -1,22 +1,44 @@
-// src/app/posts/react/page.js
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import Link from "next/link";
 
-export default function ReactPostsPage() {
+export default function reactPostsPage() {
+  const postsDir = path.join(process.cwd(), "src/app/posts/react");
+  const files = fs.readdirSync(postsDir).filter((file) => file.endsWith(".md"));
+
+  const posts = files.map((filename) => {
+    const filePath = path.join(postsDir, filename);
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+    const { data } = matter(fileContent);
+
+    return {
+      slug: filename.replace(/\.md$/, ""),
+      title: data.title,
+      description: data.description || "",
+      date:
+        typeof data.date === "string" ? data.date : new Date(data.date).toISOString().split("T")[0],
+    };
+  });
+
   return (
     <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl font-bold mb-4">React Posts</h1>
+      <h1 className="text-4xl font-bold mb-4">react Posts</h1>
+      <p className="text-gray-400">react 관련 포스트 모음</p>
 
-      <ul className="space-y-3">
-        <li>
-          <a href="/posts/react/useeffect-deep-dive" className="text-yellow-200 hover:underline">
-            useEffect 완전 정복
-          </a>
-        </li>
-        <li>
-          <a href="/posts/react/props-vs-state" className="text-yellow-200 hover:underline">
-            Props vs State, 언제 써야 해?
-          </a>
-        </li>
-      </ul>
+      <div className="mt-8 space-y-4">
+        {posts.map((post) => (
+          <Link
+            key={post.slug}
+            href={`/posts/react/${post.slug}`}
+            className="block p-4 bg-zinc-800 rounded-lg shadow hover:bg-zinc-700 transition"
+          >
+            <h2 className="text-2xl font-semibold">{post.title}</h2>
+            <p className="text-gray-400 text-sm mt-1">{post.description}</p>
+            <p className="text-gray-500 text-xs mt-1">{post.date}</p>
+          </Link>
+        ))}
+      </div>
     </main>
   );
 }
