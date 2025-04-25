@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
 import StarBackground from "../../components/StarBackground";
 
 // ✅ label 추가!
@@ -33,23 +31,25 @@ export default function PostsPage() {
 
       {/* 클릭 가능한 별들 */}
       {starLinks.map((star) => (
-        <Tippy key={star.id} content={star.label} animation="fade">
-          <Link
-            href={star.href}
-            className="absolute z-20 rounded-full transition-transform duration-300 hover:scale-125"
-            style={{
-              top: star.top,
-              left: star.left,
-              width: "12px",
-              height: "12px",
-              backgroundColor: "#fdf6d3",
-              opacity: 0.8,
-              boxShadow: "0 0 8px 4px rgba(255, 255, 200, 0.4)",
-              animation: "twinkle 4s ease-in-out infinite",
-            }}
-            aria-label={star.label}
-          />
-        </Tippy>
+        <div
+          key={star.id}
+          className="absolute z-20 rounded-full transition-transform duration-300 hover:scale-125 group"
+          style={{
+            top: star.top,
+            left: star.left,
+            width: "12px",
+            height: "12px",
+            backgroundColor: "#fdf6d3",
+            opacity: 0.8,
+            boxShadow: "0 0 8px 4px rgba(255, 255, 200, 0.4)",
+            animation: "twinkle 4s ease-in-out infinite",
+          }}
+        >
+          <Link href={star.href} aria-label={star.label} className="block w-full h-full" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 bg-white text-black text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+            {star.label}
+          </div>
+        </div>
       ))}
     </main>
   );

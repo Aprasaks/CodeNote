@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import StarField from "../components/StarField"; // ✅ 꼭 추가해줘야 함
+import StarField from "../components/StarField";
 
 export default function Home() {
   const [theme, setTheme] = useState("light");
@@ -9,9 +9,14 @@ export default function Home() {
 
   useEffect(() => {
     const html = document.documentElement;
+
+    // ✅ 최초 마운트 시 테마 수동 체크
+    const isDark = html.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+
     const observer = new MutationObserver(() => {
-      const isDark = html.classList.contains("dark");
-      setTheme(isDark ? "dark" : "light");
+      const isDarkNow = html.classList.contains("dark");
+      setTheme(isDarkNow ? "dark" : "light");
     });
 
     observer.observe(html, {

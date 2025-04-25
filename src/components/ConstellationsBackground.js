@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const CONSTELLATIONS = [
   {
@@ -131,90 +131,87 @@ const CONSTELLATIONS = [
 
 export default function ConstellationsBackground() {
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, text: "" });
-  const router = useRouter();
 
   return (
     <div className="pointer-events-none fixed inset-0 z-20 dark:block hidden">
       {CONSTELLATIONS.map((c, i) => (
-        <svg
-          key={i}
-          viewBox="0 0 100 100"
-          className="absolute pointer-events-auto cursor-pointer"
-          style={{
-            top: `${c.top}%`,
-            left: `${c.left}%`,
-            width: `${c.width}vw`,
-            height: "auto",
-          }}
-          onClick={() => c.link && router.push(c.link)}
-          onMouseEnter={(e) =>
-            setTooltip({
-              visible: true,
-              x: e.clientX,
-              y: e.clientY,
-              text: `${c.name} : ${c.description || ""}`,
-            })
-          }
-          onMouseMove={(e) => setTooltip((prev) => ({ ...prev, x: e.clientX, y: e.clientY }))}
-          onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, text: "" })}
-        >
-          <defs>
-            <filter id={`glow${i}`} x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
+        <Link key={i} href={c.link || "#"}>
+          <svg
+            viewBox="0 0 100 100"
+            className="absolute pointer-events-auto cursor-pointer"
+            style={{
+              top: `${c.top}%`,
+              left: `${c.left}%`,
+              width: `${c.width}vw`,
+              height: "auto",
+            }}
+            onMouseEnter={(e) =>
+              setTooltip({
+                visible: true,
+                x: e.clientX,
+                y: e.clientY,
+                text: `${c.name} : ${c.description || ""}`,
+              })
+            }
+            onMouseMove={(e) => setTooltip((prev) => ({ ...prev, x: e.clientX, y: e.clientY }))}
+            onMouseLeave={() => setTooltip({ visible: false, x: 0, y: 0, text: "" })}
+          >
+            <defs>
+              <filter id={`glow${i}`} x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <radialGradient id={`rg${i}`} cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="white" stopOpacity="1" />
+                <stop offset="60%" stopColor="white" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="white" stopOpacity="0" />
+              </radialGradient>
+              <style>{`
+                @keyframes twinkle-min {
+                  0%, 100% { opacity: 0.6; }
+                  50% { opacity: 0.9; }
+                }
+              `}</style>
+            </defs>
 
-            <radialGradient id={`rg${i}`} cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="white" stopOpacity="1" />
-              <stop offset="60%" stopColor="white" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="white" stopOpacity="0" />
-            </radialGradient>
+            {c.connections?.map(([from, to], idx) => {
+              const p1 = c.points[from];
+              const p2 = c.points[to];
+              if (!p1 || !p2) return null;
+              return (
+                <line
+                  key={idx}
+                  x1={p1.x}
+                  y1={p1.y}
+                  x2={p2.x}
+                  y2={p2.y}
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                  filter={`url(#glow${i})`}
+                />
+              );
+            })}
 
-            <style>{`
-              @keyframes twinkle-min {
-                0%, 100% { opacity: 0.6; }
-                50% { opacity: 0.9; }
-              }
-            `}</style>
-          </defs>
-
-          {c.connections?.map(([from, to], idx) => {
-            const p1 = c.points[from];
-            const p2 = c.points[to];
-            if (!p1 || !p2) return null;
-            return (
-              <line
-                key={idx}
-                x1={p1.x}
-                y1={p1.y}
-                x2={p2.x}
-                y2={p2.y}
-                stroke="rgba(255,255,255,0.2)"
-                strokeWidth="0.6"
-                strokeLinecap="round"
+            {c.points.map((p, j) => (
+              <circle
+                key={j}
+                cx={p.x}
+                cy={p.y}
+                r="1.4"
+                fill={`url(#rg${i})`}
                 filter={`url(#glow${i})`}
+                className="pointer-events-auto"
+                style={{
+                  animation: "twinkle-min 3s ease-in-out infinite",
+                }}
               />
-            );
-          })}
-
-          {c.points.map((p, j) => (
-            <circle
-              key={j}
-              cx={p.x}
-              cy={p.y}
-              r="1.4"
-              fill={`url(#rg${i})`}
-              filter={`url(#glow${i})`}
-              className="pointer-events-auto"
-              style={{
-                animation: "twinkle-min 3s ease-in-out infinite",
-              }}
-            />
-          ))}
-        </svg>
+            ))}
+          </svg>
+        </Link>
       ))}
 
       {tooltip.visible && (
