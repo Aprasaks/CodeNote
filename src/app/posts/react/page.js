@@ -23,8 +23,8 @@ export default function reactPostsPage() {
 
   return (
     <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-4xl font-bold mb-4">react Posts</h1>
-      <p className="text-gray-400">react 관련 포스트 모음</p>
+      <h1 className="text-4xl font-bold mb-4">React 별로 떠나봅시다~</h1>
+      <p className="text-gray-400">react 파헤쳐보기</p>
 
       <div className="mt-8 space-y-4">
         {posts.map((post) => (

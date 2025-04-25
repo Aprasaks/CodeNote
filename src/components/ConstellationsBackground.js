@@ -6,7 +6,7 @@ import Link from "next/link";
 const CONSTELLATIONS = [
   {
     name: "염소자리",
-    description: "책임감 있고 실용적이며, 목표지향적인 성격. 꾸준한 노력으로 성취를 이룹니다.",
+    description: "꾸준한 노력으로 이어지는 포스트",
     link: "/posts",
     top: 12,
     left: 8,
